@@ -18,19 +18,19 @@ A comprehensive mobile healthcare application built with Flutter that enables pa
 ## Screenshots
 
 ### User Interface
-![Login Screen](screenshot/1.png)
+![Login Screen](screenshots/1.png)
 
-![Signup Screen](screenshot/2.png)
+![Signup Screen](screenshots/2.png)
 
-![Admin Dashboard](screenshot/3.png)
+![Admin Dashboard](screenshots/3.png)
 
 ### Admin Panel
-![User Dashboard](screenshot/4.png)
+![User Dashboard](screenshots/4.png)
 
 ### Patient Experience
-![Appointment Booking](screenshot/5.png)
+![Appointment Booking](screenshots/5.png)
 
-![Doctor Chat](screenshot/6.png)
+![Doctor Chat](screenshots/6.png)
 
 ## Installation
 
