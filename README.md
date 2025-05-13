@@ -118,7 +118,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contributors
 
-- [Your Name](https://github.com/yourusername)
+- [Your Name](https://github.com/edriccoder)
 
 ## Acknowledgments
 
