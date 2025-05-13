@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/database_helper.dart';
 import '../models/user.dart';
+import '../models/doctor.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  String _selectedRole = 'Patient'; // Default to patient login
+  final List<String> _roles = ['Patient', 'Doctor', 'Admin'];
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
@@ -24,19 +27,33 @@ class _LoginScreenState extends State<LoginScreen> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      // Special case for admin login
-      if (email == 'admin' && password == '123qwe') {
+      if (_selectedRole == 'Admin' &&
+          email == 'admin' &&
+          password == '123qwe') {
         Navigator.pushReplacementNamed(context, '/admin');
         return;
       }
 
-      // Regular user login
-      final user = await DatabaseHelper().getUserByEmail(email);
+      // Check if it's a patient login
+      if (_selectedRole == 'Patient') {
+        final user = await DatabaseHelper().getUserByEmail(email);
 
-      if (user != null && user.password == password) {
-        Navigator.pushReplacementNamed(context, '/home', arguments: user);
-      } else {
-        _showErrorDialog('Invalid email or password');
+        if (user != null && user.password == password) {
+          Navigator.pushReplacementNamed(context, '/home', arguments: user);
+        } else {
+          _showErrorDialog('Invalid email or password');
+        }
+      }
+      // Check if it's a doctor login
+      else if (_selectedRole == 'Doctor') {
+        final doctor = await DatabaseHelper().getDoctorByEmail(email);
+
+        if (doctor != null && doctor.password == password) {
+          Navigator.pushReplacementNamed(context, '/doctor_home',
+              arguments: doctor);
+        } else {
+          _showErrorDialog('Invalid email or password');
+        }
       }
     } catch (e) {
       _showErrorDialog('Login failed: $e');
@@ -113,7 +130,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 30),
 
+                      // Role Selection
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          labelText: 'Login As',
+                          prefixIcon: const Icon(Icons.person_outline),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        value: _selectedRole,
+                        items: _roles.map((role) {
+                          return DropdownMenuItem<String>(
+                            value: role,
+                            child: Text(role),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedRole = value!;
+                          });
+                        },
+                      ),
+
                       // Email Field
+                      const SizedBox(height: 16),
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,

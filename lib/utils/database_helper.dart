@@ -40,13 +40,15 @@ class DatabaseHelper {
       )
     ''');
 
-    // Create Doctors table
+    // Create Doctors table with authentication fields
     await db.execute('''
       CREATE TABLE doctors(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         specialty TEXT NOT NULL,
-        clinic TEXT NOT NULL
+        clinic TEXT NOT NULL,
+        email TEXT NOT NULL DEFAULT '',
+        password TEXT NOT NULL DEFAULT ''
       )
     ''');
 
@@ -88,23 +90,29 @@ class DatabaseHelper {
       'isAdmin': 1
     });
 
-    // Insert some sample doctors
+    // Insert sample doctors with login credentials
     await db.insert('doctors', {
       'name': 'Dr. John Smith',
       'specialty': 'Cardiology',
-      'clinic': 'Heart Care Center'
+      'clinic': 'Heart Care Center',
+      'email': 'john.smith@example.com',
+      'password': '123456'
     });
 
     await db.insert('doctors', {
       'name': 'Dr. Sarah Johnson',
       'specialty': 'Dermatology',
-      'clinic': 'Skin Health Clinic'
+      'clinic': 'Skin Health Clinic',
+      'email': 'sarah.johnson@example.com',
+      'password': '123456'
     });
 
     await db.insert('doctors', {
       'name': 'Dr. Michael Lee',
       'specialty': 'Neurology',
-      'clinic': 'Brain & Spine Center'
+      'clinic': 'Brain & Spine Center',
+      'email': 'michael.lee@example.com',
+      'password': '123456'
     });
   }
 
@@ -173,6 +181,50 @@ class DatabaseHelper {
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.query('doctors');
     return List.generate(maps.length, (i) => Doctor.fromMap(maps[i]));
+  }
+
+  // Doctor authentication
+  Future<Doctor?> getDoctorByEmail(String email) async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.query(
+      'doctors',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (maps.isNotEmpty) {
+      return Doctor.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  // Get patients for a specific doctor (users who have appointments with this doctor)
+  Future<List<User>> getDoctorPatients(int doctorId) async {
+    Database db = await database;
+
+    // Get unique user IDs who have appointments with this doctor
+    List<Map<String, dynamic>> appointmentMaps = await db.query(
+      'appointments',
+      columns: ['DISTINCT userId'],
+      where: 'doctorId = ?',
+      whereArgs: [doctorId],
+    );
+
+    List<User> patients = [];
+    for (var map in appointmentMaps) {
+      int userId = map['userId'];
+      List<Map<String, dynamic>> userMaps = await db.query(
+        'users',
+        where: 'id = ?',
+        whereArgs: [userId],
+      );
+
+      if (userMaps.isNotEmpty) {
+        patients.add(User.fromMap(userMaps.first));
+      }
+    }
+
+    return patients;
   }
 
   // Appointment operations

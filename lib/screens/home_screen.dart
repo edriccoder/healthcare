@@ -201,15 +201,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   });
                 },
               ),
-              _buildQuickActionButton(
-                icon: Icons.medical_services,
-                label: 'Health Records',
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Feature coming soon!')),
-                  );
-                },
-              ),
             ],
           ),
           const SizedBox(height: 24),

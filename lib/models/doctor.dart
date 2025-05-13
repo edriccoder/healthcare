@@ -3,12 +3,16 @@ class Doctor {
   String name;
   String specialty;
   String clinic;
+  String email; // Added for login
+  String password; // Added for login
 
   Doctor({
     this.id,
     required this.name,
     required this.specialty,
     required this.clinic,
+    this.email = '', // Default empty string
+    this.password = '', // Default empty string
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +21,8 @@ class Doctor {
       'name': name,
       'specialty': specialty,
       'clinic': clinic,
+      'email': email,
+      'password': password,
     };
   }
 
@@ -26,6 +32,8 @@ class Doctor {
       name: map['name'],
       specialty: map['specialty'],
       clinic: map['clinic'],
+      email: map['email'] ?? '',
+      password: map['password'] ?? '',
     );
   }
 }

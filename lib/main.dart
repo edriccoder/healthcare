@@ -5,6 +5,7 @@ import 'screens/home_screen.dart';
 import 'screens/admin_screen.dart';
 import 'screens/payment_screen.dart';
 import 'screens/completed_appointments_screen.dart';
+import 'screens/doctor_home_screen.dart';
 import 'utils/database_helper.dart';
 
 void main() async {
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignupScreen(),
         '/home': (context) => const HomeScreen(),
         '/admin': (context) => const AdminScreen(),
+        '/doctor_home': (context) => const DoctorHomeScreen(),
       },
     );
   }

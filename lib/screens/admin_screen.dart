@@ -577,6 +577,8 @@ class _AdminScreenState extends State<AdminScreen> {
     final nameController = TextEditingController();
     final specialtyController = TextEditingController();
     final clinicController = TextEditingController();
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
 
     final result = await showDialog<bool>(
       context: context,
@@ -598,6 +600,16 @@ class _AdminScreenState extends State<AdminScreen> {
                 controller: clinicController,
                 decoration: const InputDecoration(labelText: 'Clinic'),
               ),
+              TextField(
+                controller: emailController,
+                decoration:
+                    const InputDecoration(labelText: 'Email (for login)'),
+              ),
+              TextField(
+                controller: passwordController,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+              ),
             ],
           ),
         ),
@@ -610,7 +622,9 @@ class _AdminScreenState extends State<AdminScreen> {
             onPressed: () {
               if (nameController.text.isEmpty ||
                   specialtyController.text.isEmpty ||
-                  clinicController.text.isEmpty) {
+                  clinicController.text.isEmpty ||
+                  emailController.text.isEmpty ||
+                  passwordController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Please fill all fields')),
                 );
@@ -633,6 +647,8 @@ class _AdminScreenState extends State<AdminScreen> {
         name: nameController.text,
         specialty: specialtyController.text,
         clinic: clinicController.text,
+        email: emailController.text,
+        password: passwordController.text,
       );
 
       try {
@@ -657,6 +673,8 @@ class _AdminScreenState extends State<AdminScreen> {
     final nameController = TextEditingController(text: doctor.name);
     final specialtyController = TextEditingController(text: doctor.specialty);
     final clinicController = TextEditingController(text: doctor.clinic);
+    final emailController = TextEditingController(text: doctor.email);
+    final passwordController = TextEditingController(text: doctor.password);
 
     final result = await showDialog<bool>(
       context: context,
@@ -678,6 +696,16 @@ class _AdminScreenState extends State<AdminScreen> {
                 controller: clinicController,
                 decoration: const InputDecoration(labelText: 'Clinic'),
               ),
+              TextField(
+                controller: emailController,
+                decoration:
+                    const InputDecoration(labelText: 'Email (for login)'),
+              ),
+              TextField(
+                controller: passwordController,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+              ),
             ],
           ),
         ),
@@ -690,7 +718,9 @@ class _AdminScreenState extends State<AdminScreen> {
             onPressed: () {
               if (nameController.text.isEmpty ||
                   specialtyController.text.isEmpty ||
-                  clinicController.text.isEmpty) {
+                  clinicController.text.isEmpty ||
+                  emailController.text.isEmpty ||
+                  passwordController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Please fill all fields')),
                 );
@@ -714,6 +744,8 @@ class _AdminScreenState extends State<AdminScreen> {
         name: nameController.text,
         specialty: specialtyController.text,
         clinic: clinicController.text,
+        email: emailController.text,
+        password: passwordController.text,
       );
 
       try {

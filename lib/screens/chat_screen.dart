@@ -8,11 +8,13 @@ import '../utils/database_helper.dart';
 class ChatScreen extends StatefulWidget {
   final User user;
   final Doctor doctor;
+  final bool isDoctor; // Add flag to indicate if the sender is a doctor
 
   const ChatScreen({
     super.key,
     required this.user,
     required this.doctor,
+    this.isDoctor = false, // Default is patient view
   });
 
   @override
@@ -65,8 +67,10 @@ class _ChatScreenState extends State<ChatScreen> {
     _messageController.clear();
 
     final message = Message(
-      senderId: widget.user.id!,
-      receiverId: widget.doctor.id!,
+      // If doctor is sending, senderId should be doctor ID, otherwise user ID
+      senderId: widget.isDoctor ? widget.doctor.id! : widget.user.id!,
+      // If doctor is sending, receiverId should be user ID, otherwise doctor ID
+      receiverId: widget.isDoctor ? widget.user.id! : widget.doctor.id!,
       message: text,
       timestamp: DateTime.now().toIso8601String(),
     );
@@ -98,6 +102,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Set the app bar title based on the current view
+    final String appBarTitle = widget.isDoctor
+        ? widget.user.name // Doctor sees patient name
+        : widget.doctor.name; // Patient sees doctor name
+
+    final String appBarSubtitle = widget.isDoctor
+        ? "Patient" // Doctor sees patient role
+        : widget.doctor.specialty; // Patient sees doctor specialty
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -105,7 +118,11 @@ class _ChatScreenState extends State<ChatScreen> {
             CircleAvatar(
               backgroundColor: Colors.deepPurple.shade100,
               child: Text(
-                widget.doctor.name.substring(0, 1),
+                widget.isDoctor
+                    ? widget.user.name
+                        .substring(0, 1) // First letter of patient name
+                    : widget.doctor.name
+                        .substring(0, 1), // First letter of doctor name
                 style: const TextStyle(color: Colors.deepPurple),
               ),
             ),
@@ -114,11 +131,11 @@ class _ChatScreenState extends State<ChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.doctor.name,
+                  appBarTitle,
                   style: const TextStyle(fontSize: 16),
                 ),
                 Text(
-                  widget.doctor.specialty,
+                  appBarSubtitle,
                   style: const TextStyle(fontSize: 12),
                 ),
               ],
@@ -166,7 +183,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           itemCount: _messages.length,
                           itemBuilder: (context, index) {
                             final message = _messages[index];
-                            final isMe = message.senderId == widget.user.id;
+                            // Check if this message was sent by current user
+                            // If doctor view: check if senderId is doctor's ID
+                            // If patient view: check if senderId is user's ID
+                            final isMe = widget.isDoctor
+                                ? message.senderId == widget.doctor.id
+                                : message.senderId == widget.user.id;
 
                             return Align(
                               alignment: isMe
